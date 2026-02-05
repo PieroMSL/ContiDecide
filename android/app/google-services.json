@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "80056366980",
+    "project_id": "contidecide",
+    "storage_bucket": "contidecide.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:80056366980:android:115a241ca06fbc38894fd1",
+        "android_client_info": {
+          "package_name": "pe.edu.continental.contidecide"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "80056366980-acfchhgqvtkbgdn74na980u7an62qv7f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRCzNARAqtqlHWipf6qWeU_iE1a6b6NQQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "80056366980-acfchhgqvtkbgdn74na980u7an62qv7f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
