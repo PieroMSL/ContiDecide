@@ -6,12 +6,12 @@ class AppConstants {
   static const String supabaseAnonKey =
       'sb_publishable_6tHaWFUBdekWxB6IZyXdCg_Lw1PIusI';
 
-  // Geolocation - Universidad Continental (Huancayo)
+  // Geolocalización - Universidad Continental (Huancayo)
   static const double ucLat = -12.0431;
   static const double ucLng = -75.2117;
   static const double maxDistanceMeters = 300.0;
 
-  // Validation
+  // Validación
   static const String emailDomain = '@continental.edu.pe';
 }
 

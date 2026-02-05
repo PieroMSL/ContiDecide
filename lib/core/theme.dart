@@ -16,7 +16,7 @@ class AppTheme {
       ),
       scaffoldBackgroundColor: AppColors.background,
 
-      // Typography
+      // Tipografía
       textTheme: TextTheme(
         displayLarge: GoogleFonts.roboto(
           fontSize: 22,
@@ -40,7 +40,7 @@ class AppTheme {
         ),
       ),
 
-      // AppBar Theme
+      // Tema de AppBar
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
@@ -53,7 +53,7 @@ class AppTheme {
         ),
       ),
 
-      // Card Theme
+      // Tema de Tarjetas
       cardTheme: CardThemeData(
         color: AppColors.surface,
         elevation: 4,
@@ -61,7 +61,7 @@ class AppTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
 
-      // Button Theme
+      // Tema de Botones
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
@@ -78,7 +78,7 @@ class AppTheme {
         ),
       ),
 
-      // Input Theme
+      // Tema de Inputs
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.surface,
@@ -105,7 +105,7 @@ class AppTheme {
         ),
       ),
 
-      // Floating Action Button
+      // Botón Flotante
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,

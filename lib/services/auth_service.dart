@@ -33,24 +33,24 @@ class AuthService {
   // Login con Google
   Future<UserCredential> signInWithGoogle() async {
     try {
-      // Trigger the authentication flow
+      // Iniciar el flujo de autenticación
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       if (googleUser == null) {
         throw Exception('El inicio de sesión con Google fue cancelado.');
       }
 
-      // Obtain the auth details from the request
+      // Obtener los detalles de autenticación de la solicitud
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
 
-      // Create a new credential
+      // Crear una nueva credencial
       final OAuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      // Sign in to Firebase with the Google User Credentials
+      // Iniciar sesión en Firebase con las credenciales de usuario de Google
       return await _firebaseAuth.signInWithCredential(credential);
     } on FirebaseAuthException catch (e) {
       throw _handleFirebaseAuthError(e);

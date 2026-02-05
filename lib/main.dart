@@ -15,27 +15,21 @@ import 'core/constants.dart';
 import 'core/theme.dart';
 import 'views/splash_screen.dart';
 
-// Dummy stubs for initial compilation before actual implementation
-// These will be replaced by actual files in the next steps
-// but we need them imported to make main.dart valid or we create empty ones now.
-// Strategy: I will generate the empty placeholders for the imported files immediately after this
-// to avoid compilation errors if the user tries to run it.
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Supabase
+  // Inicializar Supabase
   await Supabase.initialize(
     url: AppConstants.supabaseUrl,
     anonKey: AppConstants.supabaseAnonKey,
   );
 
-  // Initialize Firebase
+  // Inicializar Firebase
   try {
     await Firebase.initializeApp();
-    debugPrint('Firebase initialized successfully');
+    debugPrint('Firebase inicializado correctamente');
   } catch (e) {
-    debugPrint('Firebase initialization failed: $e');
+    debugPrint('Fallo en inicialización de Firebase: $e');
     // En producción, aquí se enviaría a Crashlytics
   }
 

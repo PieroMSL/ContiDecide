@@ -29,11 +29,11 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.forward();
 
-    // Navigate to Login after animation + small delay
+    // Navegar al Login después de la animación y un pequeño retraso
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {
-        // TODO: Check auth state here to decide navigation (Login vs Vote)
-        // For now, go to Login
+        // TODO: Verificar estado de autenticación aquí para decidir navegación (Login vs Voto)
+        // Por ahora, ir al Login
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => const LoginScreen()),
         );

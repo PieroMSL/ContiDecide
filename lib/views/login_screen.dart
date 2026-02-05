@@ -78,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(height: 32),
 
-                          // Email Input
+                          // Campo de correo
                           TextFormField(
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
@@ -100,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(height: 16),
 
-                          // Password Input
+                          // Campo de contraseña
                           TextFormField(
                             controller: _passwordController,
                             obscureText: true,
@@ -117,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(height: 24),
 
-                          // Error Message Display
+                          // Visualización de mensaje de error
                           if (authViewModel.errorMessage != null)
                             Container(
                               padding: const EdgeInsets.symmetric(
@@ -126,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               margin: const EdgeInsets.only(bottom: 16),
                               decoration: BoxDecoration(
-                                color: AppColors.error.withOpacity(0.1),
+                                color: AppColors.error.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(8),
                                 border: Border.all(color: AppColors.error),
                               ),
@@ -160,7 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
 
-                          // Login Button
+                          // Botón de ingreso
                           SizedBox(
                             height: 50,
                             child: ElevatedButton(
@@ -197,7 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                           const SizedBox(height: 24),
 
-                          // Separator
+                          // Separador
                           Row(
                             children: [
                               Expanded(
@@ -220,7 +220,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                           const SizedBox(height: 24),
 
-                          // Google Sign In Button
+                          // Botón de inicio de sesión con Google
                           SizedBox(
                             height: 50,
                             child: OutlinedButton.icon(
@@ -237,8 +237,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 width: 24,
                                 height: 24,
                                 decoration: const BoxDecoration(
-                                  // Placeholder for Google Logo if we don't have the asset
-                                  color: Colors.white, // In real app, use asset
+                                  // Marcador de posición para el logo de Google si no tenemos el asset
+                                  color:
+                                      Colors.white, // En app real, usar asset
                                   shape: BoxShape.circle,
                                 ),
                                 child: Center(
