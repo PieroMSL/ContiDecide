@@ -15,12 +15,27 @@ class LocationService {
     return await Geolocator.requestPermission();
   }
 
-  // Obtener posición actual con alta precisión
+  // Obtener posición actual con configuración robusta
   Future<Position> getCurrentPosition() async {
+    // Configuración específica para Android
+    LocationSettings locationSettings = const LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 10,
+    );
+
+    // Si es Android, usamos configuraciones específicas
+    /* 
+    // Nota: Para usar AndroidSettings se requiere importar geolocator_android
+    // pero el paquete base geolocator ya abstrae bastante.
+    // Simplemente aumentaremos el timeout y aseguraremos la precisión.
+    */
+
     return await Geolocator.getCurrentPosition(
       locationSettings: const LocationSettings(
         accuracy: LocationAccuracy.high,
-        timeLimit: Duration(seconds: 10),
+        timeLimit: Duration(
+          seconds: 15,
+        ), // Aumentar timeout por si es emulador lento
       ),
     );
   }

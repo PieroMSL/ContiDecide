@@ -14,7 +14,7 @@ class Candidate {
   factory Candidate.fromJson(Map<String, dynamic> json) {
     return Candidate(
       id: json['id'],
-      name: json['name'],
+      name: json['nombre'],
       description: json['description'] ?? '',
       imageUrl: json['image_url'], // Si hubiera imagenes
     );

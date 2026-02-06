@@ -1,6 +1,6 @@
 import 'package:contidecide/core/constants.dart';
 import 'package:contidecide/viewmodels/auth_viewmodel.dart';
-import 'package:contidecide/views/vote_screen.dart';
+import 'package:contidecide/views/profile_verification_screen.dart'; // Next step
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,15 +12,13 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-
+  // Manejo centralizado del login exitoso
   Future<void> _handleLoginSuccess() async {
     if (mounted) {
-      Navigator.of(
-        context,
-      ).pushReplacement(MaterialPageRoute(builder: (_) => const VoteScreen()));
+      // Navegación directa a Verificación de Perfil (NO dashboard)
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const ProfileVerificationScreen()),
+      );
     }
   }
 
@@ -28,252 +26,133 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final authViewModel = Provider.of<AuthViewModel>(context);
 
+    // Pantalla limpia y centrada
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24.0),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // 1. Logo Institucional
+                // 1. Logo Institucional (Top)
                 Container(
-                  height: 120,
-                  margin: const EdgeInsets.only(bottom: 40),
+                  width: 180, // Tamaño adecuado
+                  height: 180,
+                  margin: const EdgeInsets.only(bottom: 60),
                   child: Image.asset(
-                    'assets/images/logo_universidad_continental_uc.png',
+                    'assets/images/Logo_Continental.png',
                     fit: BoxFit.contain,
                   ),
                 ),
 
-                // 2. Tarjeta de Login
-                Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+                // Título de bienvenida opcional (o eliminar según gusto minimalista)
+                Text(
+                  "Bienvenido",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary, // Guinda
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            "Bienvenido",
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.headlineSmall
-                                ?.copyWith(
-                                  color: AppColors.primary,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            "Ingresa con tu cuenta institucional",
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(color: Colors.grey[600]),
-                          ),
-                          const SizedBox(height: 32),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  "Ingresa con tu cuenta institucional",
+                  style: TextStyle(color: Colors.grey, fontSize: 16),
+                ),
+                const SizedBox(height: 48),
 
-                          // Campo de correo
-                          TextFormField(
-                            controller: _emailController,
-                            keyboardType: TextInputType.emailAddress,
-                            decoration: const InputDecoration(
-                              labelText: "Correo Institucional",
-                              hintText: "u1234567@continental.edu.pe",
-                              prefixIcon: Icon(Icons.email_outlined),
+                // 2. Mensaje de Error (si existe)
+                if (authViewModel.errorMessage != null)
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(12),
+                    margin: const EdgeInsets.only(bottom: 24),
+                    decoration: BoxDecoration(
+                      color: AppColors.error.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: AppColors.error),
+                    ),
+                    child: Text(
+                      authViewModel.errorMessage!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: AppColors.error,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+
+                // 3. Botón Único: Google
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: OutlinedButton(
+                    onPressed: authViewModel.isLoading
+                        ? null
+                        : () async {
+                            final success = await authViewModel
+                                .loginWithGoogle();
+                            if (success) {
+                              await _handleLoginSuccess();
+                            }
+                          },
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: const Color(0xFF2D2D2D), // Texto oscuro
+                      backgroundColor: Colors.white,
+                      side: const BorderSide(color: Colors.grey), // Borde suave
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: authViewModel.isLoading
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.grey,
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "El correo es obligatorio";
-                              }
-                              // Validación visual rápida, la fuerte está en VM
-                              if (!value.contains('@')) {
-                                return "Correo inválido";
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 16),
-
-                          // Campo de contraseña
-                          TextFormField(
-                            controller: _passwordController,
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                              labelText: "Contraseña",
-                              prefixIcon: Icon(Icons.lock_outline),
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "La contraseña es obligatoria";
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 24),
-
-                          // Visualización de mensaje de error
-                          if (authViewModel.errorMessage != null)
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 8,
-                                horizontal: 12,
-                              ),
-                              margin: const EdgeInsets.only(bottom: 16),
-                              decoration: BoxDecoration(
-                                color: AppColors.error.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(color: AppColors.error),
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.error_outline,
-                                    color: AppColors.error,
-                                    size: 20,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      authViewModel.errorMessage!,
-                                      style: TextStyle(
-                                        color: AppColors.error,
-                                        fontSize: 13,
-                                      ),
-                                    ),
-                                  ),
-                                  // Botón cerrar error
-                                  GestureDetector(
-                                    onTap: authViewModel.clearError,
-                                    child: Icon(
-                                      Icons.close,
-                                      size: 16,
-                                      color: AppColors.error,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                          // Botón de ingreso
-                          SizedBox(
-                            height: 50,
-                            child: ElevatedButton(
-                              onPressed: authViewModel.isLoading
-                                  ? null
-                                  : () async {
-                                      if (_formKey.currentState!.validate()) {
-                                        // Cerrar teclado
-                                        FocusScope.of(context).unfocus();
-
-                                        final success = await authViewModel
-                                            .login(
-                                              _emailController.text,
-                                              _passwordController.text,
-                                            );
-
-                                        if (success) {
-                                          await _handleLoginSuccess();
-                                        }
-                                      }
-                                    },
-                              child: authViewModel.isLoading
-                                  ? const SizedBox(
-                                      height: 24,
-                                      width: 24,
-                                      child: CircularProgressIndicator(
-                                        color: Colors.white,
-                                        strokeWidth: 2,
-                                      ),
-                                    )
-                                  : const Text("INGRESAR"),
-                            ),
-                          ),
-
-                          const SizedBox(height: 24),
-
-                          // Separador
-                          Row(
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Expanded(
-                                child: Divider(color: Colors.grey.shade300),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
+                              // Logo de Google (simulado con texto o icono si no hay asset específico de Google)
+                              // Idealmente usar 'assets/images/google_logo.png' si existiera,
+                              // por ahora usaremos un texto estilizado o icono.
+                              // El prompt pedía "Logo oficial de Google a color",
+                              // como no tengo el asset, usaré un hack visual o Icono genérico
+                              // ya que no puedo crear imagenes de marcas registradas.
+                              // Asumiremos que el usuario prefiere limpieza.
+                              const Text(
+                                "G ",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  color: Colors.blue,
                                 ),
-                                child: Text(
-                                  "O",
-                                  style: TextStyle(color: Colors.grey.shade600),
-                                ),
                               ),
-                              Expanded(
-                                child: Divider(color: Colors.grey.shade300),
+                              const SizedBox(width: 12),
+                              const Text(
+                                "Ingresar con Google",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ],
                           ),
-
-                          const SizedBox(height: 24),
-
-                          // Botón de inicio de sesión con Google
-                          SizedBox(
-                            height: 50,
-                            child: OutlinedButton.icon(
-                              onPressed: authViewModel.isLoading
-                                  ? null
-                                  : () async {
-                                      final success = await authViewModel
-                                          .loginWithGoogle();
-                                      if (success) {
-                                        await _handleLoginSuccess();
-                                      }
-                                    },
-                              icon: Container(
-                                width: 24,
-                                height: 24,
-                                decoration: const BoxDecoration(
-                                  // Marcador de posición para el logo de Google si no tenemos el asset
-                                  color:
-                                      Colors.white, // En app real, usar asset
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    "G",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.blue,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              label: const Text("Ingresar con Google"),
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: AppColors.secondary,
-                                side: BorderSide(color: Colors.grey.shade300),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                   ),
                 ),
 
                 const SizedBox(height: 24),
-                Text(
-                  "© 2024 Universidad Continental",
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(color: Colors.grey),
+
+                // Footer Institucional
+                const Text(
+                  "Ingeniería de Sistemas – Universidad Continental",
+                  style: TextStyle(color: Colors.grey, fontSize: 12),
                 ),
               ],
             ),
@@ -281,12 +160,5 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
   }
 }

@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:contidecide/core/constants.dart';
-import 'package:contidecide/views/login_screen.dart'; // Will be created next
+import 'package:contidecide/views/auth_gate.dart';
+import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -9,73 +9,59 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _opacityAnimation;
-
+class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    );
-
-    _opacityAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
-
-    _controller.forward();
-
-    // Navegar al Login después de la animación y un pequeño retraso
+    // Navegar al AuthGate después de 3 segundos
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {
-        // TODO: Verificar estado de autenticación aquí para decidir navegación (Login vs Voto)
-        // Por ahora, ir al Login
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const LoginScreen()),
-        );
+        Navigator.of(
+          context,
+        ).pushReplacement(MaterialPageRoute(builder: (_) => const AuthGate()));
       }
     });
   }
 
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primary, // Guinda Institucional
+      backgroundColor: Colors.white,
       body: Center(
-        child: FadeTransition(
-          opacity: _opacityAnimation,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Logo
-              Container(
-                width: 200, // Reasonable size
-                height: 200,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(
-                      'assets/images/logo_universidad_continental_uc.png',
-                    ),
-                    fit: BoxFit.contain,
-                  ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Logo
+            Container(
+              width: 160,
+              height: 160,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/Logo_Continental.png'),
+                  fit: BoxFit.contain,
                 ),
               ),
-              const SizedBox(height: 24),
-              // Optional: App Name or Loading Indicator if needed by design,
-              // but design doc says "Logo blanco centrado" (image probably has text or just logo)
-              // If the image is the one provided, it likely has the text 'Universidad Continental'.
-            ],
-          ),
+            ),
+            const SizedBox(height: 20),
+            // Título
+            const Text(
+              'Elecciones de Delegado',
+              style: TextStyle(
+                color: Color(0xFF2D2D2D),
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 4),
+            // Subtítulo
+            const Text(
+              'Ingeniería de Sistemas',
+              style: TextStyle(color: Colors.grey, fontSize: 16),
+            ),
+            const SizedBox(height: 40),
+            // Loader
+            const CircularProgressIndicator(color: AppColors.primary),
+          ],
         ),
       ),
     );

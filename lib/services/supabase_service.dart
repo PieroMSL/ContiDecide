@@ -8,9 +8,9 @@ class SupabaseService {
   Future<List<Candidate>> getCandidates() async {
     try {
       final List<dynamic> data = await _client
-          .from('candidates')
+          .from('candidatos')
           .select()
-          .order('name', ascending: true);
+          .order('nombre', ascending: true);
 
       return data.map((json) => Candidate.fromJson(json)).toList();
     } catch (e) {
@@ -22,7 +22,7 @@ class SupabaseService {
   Future<bool> hasUserVoted(String email) async {
     try {
       final data = await _client
-          .from('votes')
+          .from('votos')
           .select('id')
           .eq('user_email', email)
           .maybeSingle();
@@ -42,7 +42,7 @@ class SupabaseService {
         throw Exception('El usuario ya ha registrado un voto.');
       }
 
-      await _client.from('votes').insert({
+      await _client.from('votos').insert({
         'user_email': email,
         'candidate_id': candidateId,
         'voted_at': DateTime.now().toIso8601String(),

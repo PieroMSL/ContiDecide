@@ -1,7 +1,9 @@
+import 'dart:async'; // Importación correcta para TimeoutException
+
+import 'package:contidecide/core/constants.dart';
+import 'package:contidecide/services/location_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
-import '../core/constants.dart';
-import '../services/location_service.dart';
 
 enum LocationStatus {
   initial,
@@ -35,13 +37,18 @@ class LocationViewModel extends ChangeNotifier {
         _status = LocationStatus.gpsDisabled;
         _errorMessage = "El GPS está desactivado. Actívalo para continuar.";
         notifyListeners();
+        // Intentar abrir configuración (opcional)
+        // await _locationService.openLocationSettings();
         return false;
       }
 
-      // 2. CP-09 Permisos
+      // 2. CP-09 Permisos (Lógica solicitada)
       LocationPermission permission = await _locationService.checkPermission();
+
       if (permission == LocationPermission.denied) {
+        // Solicitar permisos explícitamente para que salga el pop-up
         permission = await _locationService.requestPermission();
+
         if (permission == LocationPermission.denied) {
           _status = LocationStatus.permissionDenied;
           _errorMessage = "Permiso de ubicación denegado.";
@@ -58,7 +65,7 @@ class LocationViewModel extends ChangeNotifier {
         return false;
       }
 
-      // 3. Obtener Ubicación
+      // 3. Obtener Ubicación (Con TimeoutException de Dart)
       Position position = await _locationService.getCurrentPosition();
 
       // 4. Defensa: Detección de Fake GPS / Mock Location
@@ -87,12 +94,19 @@ class LocationViewModel extends ChangeNotifier {
         return false;
       }
 
+      // Éxito
       _status = LocationStatus.validLocation;
       notifyListeners();
       return true;
+    } on TimeoutException catch (_) {
+      // Excepción nativa de Dart
+      _status = LocationStatus.error;
+      _errorMessage = "Tiempo de espera agotado. Verifica tu señal GPS.";
+      notifyListeners();
+      return false;
     } catch (e) {
       _status = LocationStatus.error;
-      _errorMessage = "Error al obtener ubicación: ${e.toString()}";
+      _errorMessage = "Error: $e";
       notifyListeners();
       return false;
     }
